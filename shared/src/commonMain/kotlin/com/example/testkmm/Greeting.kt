@@ -1,15 +1,17 @@
 package com.example.testkmm
 
 import com.example.testkmm.data.User
+import com.example.testkmm.data.UserDataSource
 import io.github.aakira.napier.Napier
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 
-class Greeting {
+class Greeting(val userDataSource: UserDataSource) {
     private val httpClient = HttpClient(){
         install(Logging){
             level = LogLevel.ALL
@@ -25,8 +27,10 @@ class Greeting {
         }
     }.also { initLogger() }
 
-    suspend fun greeting(): String {
-        return getUsers().random().toString()
+    suspend fun greeting(): Flow<List<User>?> {
+        val users = getUsers()
+        userDataSource.insertUsers(users)
+        return userDataSource.getAllUsers()
     }
 
     private suspend fun getUsers(): List<User>{

@@ -5,19 +5,32 @@ import android.os.Bundle
 import com.example.testkmm.Greeting
 import android.widget.TextView
 import android.widget.Toast
+import com.example.testdatabase.TestDatabase
+import com.example.testkmm.data.DriverFactory
+import com.example.testkmm.data.User
+import com.example.testkmm.data.UserDataSource
+import com.example.testkmm.data.UserDataSourceImpl
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.CoroutineContext
 
-suspend fun greet(): String {
+suspend fun greet(): Flow<List<User>> {
     return Greeting().greeting()
 }
 
 class MainActivity : AppCompatActivity(), CoroutineScope {
+
+    val Greeting = com.example.testkmm.Greeting()
+
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = job
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val driver = DriverFactory(this).createDriver()
+        val database = TestDatabase(driver)
+        val UserDataSource = UserDataSourceImpl()
+
         setContentView(R.layout.activity_main)
         val tv: TextView = findViewById(R.id.text_view)
 

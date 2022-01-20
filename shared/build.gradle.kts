@@ -52,12 +52,15 @@ kotlin {
 
 
                 implementation("org.jetbrains.kotlin:kotlin-stdlib-common:1.6.10")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.6")
+                //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.6")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+
                 //implementation ("io.ktor:ktor-client-json:1.0.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
 
                implementation("com.squareup.sqldelight:runtime:1.5.3")
+               implementation("com.squareup.sqldelight:coroutines-extensions:1.5.3")
 
 
             }

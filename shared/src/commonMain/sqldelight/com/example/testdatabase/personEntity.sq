@@ -6,11 +6,17 @@ CREATE TABLE IF NOT EXISTS Users (
 name TEXT NOT NULL,
 username TEXT NOT NULL,
 email TEXT NOT NULL,
-address TEXT AS Address,
+address TEXT AS Address NOT NULL,
 phone TEXT NOT NULL,
 website TEXT NOT NULL,
-company TEXT AS Company
+company TEXT AS Company NOT NULL
 );
 
 getAllUsers:
 SELECT* FROM Users;
+
+
+insertUser:
+    INSERT OR REPLACE
+    INTO Users
+    VALUES (?, ?, ?, ? ,? ,? ,? ,?);
