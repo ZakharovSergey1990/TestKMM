@@ -1,0 +1,16 @@
+import com.example.testkmm.data.Address;
+import com.example.testkmm.data.Company;
+
+CREATE TABLE IF NOT EXISTS Users (
+ id INTEGER NOT NULL PRIMARY KEY,
+name TEXT NOT NULL,
+username TEXT NOT NULL,
+email TEXT NOT NULL,
+address TEXT AS Address,
+phone TEXT NOT NULL,
+website TEXT NOT NULL,
+company TEXT AS Company
+);
+
+getAllUsers:
+SELECT* FROM Users;
