@@ -6,6 +6,9 @@ import org.kodein.di.bind
 import org.kodein.di.singleton
 
 class EngineModule {
+    fun init() {
+
+    }
 }
 
 //internal val engineModule = DI.Module(
@@ -14,3 +17,7 @@ class EngineModule {
 //bind<DriverFactory>() with singleton { DriverFactory() }
 //    }
 //)
+
+//val kodein = DI.{
+//
+//}

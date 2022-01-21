@@ -16,20 +16,23 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 interface UserDataSource {
-    fun getAllUsers(): Flow<List<User>?>
+    fun getAllUsersAsFlow(): Flow<List<User>?>
 
     suspend fun deleteUserById(id: Long)
 
-    suspend fun insertUsers(list: List<User>)
+    suspend fun insertUser(user: User)
+
+    fun getAllUsers(): List<User>?
+
 }
 
-class UserDataSourceImpl(private val driver: SqlDriver) : UserDataSource {
+class UserDataSourceImpl(private val driver: DriverFactory) : UserDataSource {
 
-    private val database = createDatabase(driver)
+    private val database = createDatabase(driver.createDriver())
 
     private var queries: PersonEntityQueries = database.personEntityQueries
 
-    override fun getAllUsers(): Flow<List<User>> {
+    override fun getAllUsersAsFlow(): Flow<List<User>> {
 
         return queries.getAllUsers().asFlow().mapToList().map { list -> mapUsersToUserList(list) }
     }
@@ -38,20 +41,33 @@ class UserDataSourceImpl(private val driver: SqlDriver) : UserDataSource {
 
     }
 
-    override suspend fun insertUsers(list: List<User>) {
+    override suspend fun insertUser(user: User) {
         withContext(Dispatchers.Default) {
-            list.forEach {
                 queries.insertUser(
-                    it.id,
-                    it.name,
-                    it.username,
-                    it.email,
-                    it.address,
-                    it.phone,
-                    it.website,
-                    it.company
+                    user.id,
+                    user.name,
+                    user.username,
+                    user.email,
+                    user.address,
+                    user.phone,
+                    user.website,
+                    user.company
                 )
-            }
+        }
+    }
+
+    override fun getAllUsers(): List<User> {
+        return queries.getAllUsers().executeAsList().map {
+            User(
+                id = it.id,
+                name = it.name,
+                username = it.username,
+                email = it.email,
+                address = it.address,
+                phone = it.phone,
+                website = it.website,
+                company = it.company
+            )
         }
     }
 

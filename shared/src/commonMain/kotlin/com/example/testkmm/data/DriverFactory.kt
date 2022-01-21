@@ -1,9 +1,10 @@
 package com.example.testkmm.data
 
 import com.example.testdatabase.TestDatabase
+import com.example.testkmm.KMMContext
 import com.squareup.sqldelight.db.SqlDriver
 
-expect class DriverFactory {
+expect class DriverFactory(context : KMMContext) {
     fun createDriver(): SqlDriver
 }
 
