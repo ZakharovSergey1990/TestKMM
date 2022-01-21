@@ -62,6 +62,9 @@ kotlin {
                implementation("com.squareup.sqldelight:runtime:1.5.3")
                implementation("com.squareup.sqldelight:coroutines-extensions:1.5.3")
 
+                //di
+
+                implementation("org.kodein.di:kodein-di:7.10.0")
 
             }
         }

@@ -1,13 +1,19 @@
 package com.example.testkmm.data
 
+import com.example.testdatabase.PersonEntityQueries
 import com.example.testdatabase.TestDatabase
 import com.example.testdatabase.Users
+import com.squareup.sqldelight.ColumnAdapter
+import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 interface UserDataSource {
     fun getAllUsers(): Flow<List<User>?>
@@ -17,14 +23,15 @@ interface UserDataSource {
     suspend fun insertUsers(list: List<User>)
 }
 
-class UserDataSourceImpl(private val db: TestDatabase) : UserDataSource {
+class UserDataSourceImpl(private val driver: SqlDriver) : UserDataSource {
 
-    private val queries = db.personEntityQueries
+    private val database = createDatabase(driver)
 
-    override fun getAllUsers(): Flow<List<User>?> {
+    private var queries: PersonEntityQueries = database.personEntityQueries
 
-        return queries.getAllUsers().asFlow().mapToList()
-            .map { list -> mapUsersToUserList(list) }
+    override fun getAllUsers(): Flow<List<User>> {
+
+        return queries.getAllUsers().asFlow().mapToList().map { list -> mapUsersToUserList(list) }
     }
 
     override suspend fun deleteUserById(id: Long) {
@@ -64,4 +71,33 @@ class UserDataSourceImpl(private val db: TestDatabase) : UserDataSource {
         }
     }
 
+
+    private fun createDatabase(driver: SqlDriver): TestDatabase {
+
+        val addressAdapter = object : ColumnAdapter<Address, String> {
+            override fun decode(databaseValue: String): Address {
+                return Json.decodeFromString<Address>(databaseValue)
+            }
+
+            override fun encode(value: Address): String {
+                return Json.encodeToString(value)
+            }
+
+        }
+
+        val companyAdapter = object : ColumnAdapter<Company, String> {
+            override fun decode(databaseValue: String): Company {
+                return Json.decodeFromString<Company>(databaseValue)
+            }
+
+            override fun encode(value: Company): String {
+                return Json.encodeToString(value)
+            }
+        }
+
+        return TestDatabase(
+            driver,
+            Users.Adapter(addressAdapter = addressAdapter, companyAdapter = companyAdapter)
+        )
+    }
 }
