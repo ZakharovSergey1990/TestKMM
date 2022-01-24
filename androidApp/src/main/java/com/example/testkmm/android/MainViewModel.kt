@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.testkmm.Greeting
 import com.example.testkmm.data.User
 import com.example.testkmm.di.MultiplatformSDK
 import com.example.testkmm.di.userRepository
@@ -20,15 +19,16 @@ class MainViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    var users: List<User> by mutableStateOf(listOf())
+    var users: List<User>? by mutableStateOf(listOf())
 
     init {
         viewModelScope.launch {
-            userRepository.getAllUsers().collect {
-                if (it != null) {
-                    users = it
-                }
-            }
+          users = userRepository.getAllUsers()
+//              .collect {
+//                if (it != null) {
+//                    users = it
+//                }
+//            }
         }
     }
 }

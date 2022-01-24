@@ -2,7 +2,7 @@ package com.example.testkmm.android
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.testkmm.Greeting
+
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.material.Surface
