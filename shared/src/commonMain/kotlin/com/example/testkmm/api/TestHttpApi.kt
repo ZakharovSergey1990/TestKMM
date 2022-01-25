@@ -30,6 +30,8 @@ class TestHttpApiImpl():TestHttpApi {
         }
     }.also { initLogger() }
 
+
+    @Throws(Exception::class)
     override suspend fun getUsers(): List<User> {
         return httpClient.get("https://jsonplaceholder.typicode.com/users")
     }
